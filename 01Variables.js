@@ -20,7 +20,7 @@ function varExample() {
 }
 varExample();
 // console.log("Outside function " + vi); //var cannot be accessed outside of function if it's defined within function
-console.log("Global variable vo " + vo);
+console.log("Global variable vo " + vo + ' Var block scoped ' + vblock);
 
 console.log(
   "--------Let and const are ES6 features(ECMAscript indroduced in 2015)-----------------------"
