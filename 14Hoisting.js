@@ -74,3 +74,19 @@ class Human {
 
 const person1 = new Human("Darshan", 25);
 person1.greet();
+
+/**Temportal Dead Zone
+ * We know that we cannot access the expressions or variables defied with let and const before the declaration.
+ * Since they are not hoisted. the zone which are written before defiing the non-hoisted(let,const) expressions or 
+ * variables are called Temporal Dead Zone!
+ */
+
+// console.log(tdz);
+// console.log('Hello!');
+// console.log('This is Darshan!');
+const tdz = 10;
+console.log('temporal Dead Zone example!')
+/**
+ * So the passage of code which are written before the initialization of vairable or function exression (from 
+ * line 84 till 87) using let or const which cannot be hoisted is termed as Temporal Dead Zone.  
+ * */
