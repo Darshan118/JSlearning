@@ -46,13 +46,25 @@ checkz();
 console.log(typeof checkz); //function
 
 /**
+ * But when we try to access just the expression which was used to store the function then it will give undefined
+ * only when we use var just like any other variable, since same rule is applicable for let and const
+ * they cannot be used for hoisting.
+ */
+console.log("This is function expression variable: " + a); //accessing a variable rather not calling a function which will be a(); hence when var is declared
+//and when it is accessed at top level then it will be undefined
+var a = function () {
+  console.log("Check for Hoisting");
+};
+
+/**
  * Classes are also not hoisted
  */
-//cannot create an object before the class initialization, Hence 
+//cannot create an object before the class initialization, Hence
 //classes are not hoisted!
-//const person = new Human("Darshan", 25); 
+//const person = new Human("Darshan", 25);
 class Human {
-  constructor(name, age) { //constructor is called when object/instance to the class is created!
+  constructor(name, age) {
+    //constructor is called when object/instance to the class is created!
     (this.name = name), (this.age = age);
   }
   greet() {
@@ -60,5 +72,5 @@ class Human {
   }
 }
 
-const person1 = new Human('Darshan' , 25);
+const person1 = new Human("Darshan", 25);
 person1.greet();
