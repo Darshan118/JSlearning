@@ -1,4 +1,12 @@
 /**
+ * A function is called as First class citizen because it can be used everywhere like 
+ * as an argument to another function(callback functions).
+ * can retuen the function in the return statements(returning functions)
+ * can be used as array elements as well as property in a object. 
+ * can be assigned to a variable as well.(function expressions)
+ */
+
+/**
  * A function can be called before it's declaration with the help of concept called Hoisting mechanism in JS
  * Hoisting is a mechanism in JS where variables and function declarations are moved to the top of their
  * containing scope.
@@ -173,3 +181,24 @@ setTimeout(function () {
 (() => {
   console.log("IIFE using arrow function!");
 })();
+
+//Array of function
+let arr = [
+  function (a, b) {
+    return a + b;
+  },
+  function (a, b) {
+    return a - b;
+  },
+  function (a, b) {
+    return a * b;
+  },
+];
+
+let sum = arr[0];
+let sub = arr[1];
+let mul = arr[2];
+
+console.log(sum(10,20));
+console.log(sub(20,5));
+console.log(mul(12,2));
