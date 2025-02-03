@@ -155,3 +155,12 @@ emp.showSalary(); //accessing private field using method
 // Protected (Convention)	this._name	            ⚠️ Yes (but discouraged)	✅ Yes
 // Private (ES2020)	        this.#name	            ❌ No	                   ❌ No
 // Getter & Setter	        get name(), set name()	✅ Yes (Controlled)	       ✅ Yes
+
+
+/**
+ * Which One Should You Use?
+ * ✅ Use public properties for normal data that doesn't need restriction.
+ * ✅ Use #private properties if you need strict privacy (ES2020+).
+ * ✅ Use _protected convention for values that should be accessed only in subclasses.
+ * ✅ Use getters/setters when you need controlled access (e.g., validation).
+ */
