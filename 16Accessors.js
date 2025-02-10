@@ -1,5 +1,6 @@
 /**
  * -------------JS Accessors(getters and setters)-----------------
+ * They contribute in encapsulating data in class so that it cannot be accessed from outside class.
  * Getters and setters provide a way to encapsulate the implementation details of object properties, while still
  * allowing external code to access and modify it's value.
  * they are defined using get and set keyword
