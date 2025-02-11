@@ -146,3 +146,85 @@ const obj2 = { obj2A: undefined }; //if the prop value is other than undefined t
 const { obj2A = 5 } = obj2;
 console.log(obj2A);
 
+//Default values doesn't work if the null value is passed since it is a deliberate assignment stating a value is made null intentionally
+const obj3 = { obj3A: null };
+const { obj3A = 5 } = obj3;
+console.log(obj3A);
+
+/**
+ * 3 - Rest with objects removes eisting references
+ * meaning - whenever we use rest operator to store rest of the property values it will be a differnet
+ * object by itself in the below example obj4rest is a differnet object than the parent object obj4 and they
+ * have different references by themselves. Hence if we modify property value in either of the objects then
+ * it won't affect the other objects properties. It's the same rule as reference types.
+ */
+const obj4 = { obj4name: "Darshan", obj4age: 25, obj4Ph: 797234 };
+const { obj4name, ...obj4rest } = obj4;
+obj4rest.obj4age = 40;
+console.log("Parent obj4 object", obj4);
+console.log("Obj4 rest object", obj4rest);
+
+/**
+ * Cannot destructure on undefined or null values
+ *
+ * const obj = null;
+ * const {name} = obj //❌ TypeError
+ *
+ * solution for this issue is to use fallback objects
+ */
+const obj5 = null;
+const { obj5name } = obj5 || {};
+console.log(obj5name); //it will then be undefined but not an error!
+
+/**
+ * Default values do not work for null values
+ * const obj = {name : null}
+ * const {name : 'Darshan'} = obj
+ * clg(name); //it will take null but not default
+ *
+ * solution for this issue is to give a check for null
+ */
+const obj6A = null;
+const { obj6Aname = "Darshannnnn" } = obj6A ?? {}; //here || operator also works fine! since null doesn't vvalidate for || as it is a falsy value.
+console.log(obj6Aname);
+
+//If the property inside the object is null we must use nullish coalescing '??' operator
+const obj6 = { obj6name: null };
+const { obj6name = "Darshan" } = obj6.obj6name ?? {}; // nullish coalescing operator - stops if the first value is not null/undefined.
+console.log(obj6name);
+
+// 6 - Order matters in arrays but not in objects since the property names must match while destructuring
+
+const arr4 = [1, 2, 3, 4, 5];
+const [arr4First, arr4Second, arr4Third, ...arr4Rest] = arr4;
+console.log(
+  "First arr4",
+  arr4First,
+  "Second arr4",
+  arr4Second,
+  "Third arr4",
+  arr4Third,
+  "Arr4 rest",
+  arr4Rest
+);
+
+const obj7 = { obj7Name: "Darshan", obj7Age: 25 };
+const { obj7Age, obj7Name } = obj7;
+console.log("Obj7 name:", obj7Name, "obj7 age:", obj7Age);
+
+/**
+ * 7. When to Use Destructuring?
+ * ✅ When working with function parameters
+ * ✅ When handling API responses
+ * ✅ When dealing with nested objects
+ * ✅ When extracting values from arrays
+ */
+
+/**
+ * Key Notes:
+ * 🔹 Destructuring allows extracting values from arrays/objects
+ * 🔹 Default values apply only to undefined, but not null
+ * 🔹 Rest operator collects remaining values from array and rest of properties from objects.
+ * 🔹 Avoid destructuring null or undefined to prevent errors
+ * 🔹 Order matters in arrays, but not in objects
+ */
