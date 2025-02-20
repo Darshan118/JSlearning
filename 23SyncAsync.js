@@ -1,3 +1,10 @@
+/**
+ * Order of execution -
+ * 1 - Sync operations
+ * 2 - Async - Microtask like Promises ,MutationObserver, queueMicrotask
+ * 3 - Async - Macrotask Queue like setTimeout , setInterval, I/O operations , setImmediate(Node.js only)
+ */
+
 /*console.log("Start");
 
 setTimeout(() => console.log("Timeout"), 0);

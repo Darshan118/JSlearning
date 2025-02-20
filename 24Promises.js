@@ -5,6 +5,14 @@
  * reject(error) changes them to rejected.
  * finally() executes after.then and .catch
  */
+/************************************************************************************************************/
+/**
+ * Order of execution -
+ * 1 - Sync operations
+ * 2 - Async - Microtask like Promises ,MutationObserver, queueMicrotask
+ * 3 - Async - Macrotask Queue like setTimeout , setInterval, I/O operations , setImmediate(Node.js only)
+ */
+
 
 /*const myPromise = new Promise((resolve, reject) => {
   setTimeout(() => {
@@ -124,13 +132,22 @@ Promise.reject("Hello!")
 /**
  * Promise.All() creates a promises that resolves with an array of promises that is specified within All
  * If any of the Promise fails then entire Promise.All() fails
+ *
+ * It returns the array of results if it either fulfills or rejects.
  */
+
 /*
 Promise.all([
   Promise.resolve("Resolve 1"),
   new Promise((resolve) => {
     resolve("resolve 2!");
-  }).then((val) => console.log(val)),
+  }).then(
+    // (val) => {
+    // console.log(val);
+    console.log("Some fullfilled message from 2nd promise element in array")
+    //if we catch the promise value here then it will print undefined in the resolved All() parent promise
+    // array which is returned
+  ),
   new Promise((resolve) =>
     setTimeout(() => {
       resolve("resolve 3!");
@@ -138,19 +155,22 @@ Promise.all([
   ),
   Promise.resolve("Resolve 4!"),
 ])
-  .then((val) => console.log(val[1])) //here val is an array which contains array of resolved values.
+  .then((val) => console.log(val)) //here val is an array which contains array of resolved values.
   .catch((err) => console.log("Promise is rejected!", err));
+
 */
 
 //---------------------Promise.race()---------------------------------
 /**
  * Resolves or Rejects the promise when any of first the provided array of promises gets resolved or rejected.
+ * It returns the first single fulfilled or rejected promise in the array and returns it's
+ * fullfilled value or error.
  */
 /*
 Promise.race([
   new Promise((resolve, reject) => {
     setTimeout(() => {
-      reject("1 second");
+      reject("4 second");
     }, 4000);
   }),
   new Promise((resolve) => {
@@ -166,18 +186,26 @@ Promise.race([
     console.log("Promise is rejected!!", err);
   });
 
-  //In the above code the second array element promise executes first sine the timeout is 3 seconds hence 
-  //promise will be resolved and then the ultimate parent promise with .race will also be resolved! 
-  //this is good for timeout mechanisms!
+  */
 
-*/
+//In the above code the second array element promise executes first sine the timeout is 3 seconds hence
+//promise will be resolved and then the ultimate parent promise with .race will also be resolved!
+//this is good for timeout mechanisms!
 
 //---------------------Promise.allSettles()---------------------------------
 /**
  * Allsettles will resolve when all the array elements whcih are differnet promises will be
  * settled(wither resolve or reject)
  * It doesn't matter if any one of them fails they must settle then the allsettles promise will be resolved
+ *
+ * It returns array of {status, value/reason} status if fullfill or reject and value
+ * is the promise value and if it was rejected then it will be reson!
+ *
+ * If any of the promise inside this array is in pending state(which doesn't have either resolve or reject)
+ * then the entire allSettles() will fail or be stuck in loop and it doesn't gets resolved or rejected
  */
+
+/*
 Promise.allSettled([
   Promise.resolve("Resolved 1!"),
   Promise.reject("Rejected!"),
@@ -186,7 +214,7 @@ Promise.allSettled([
     console.log(
       "This promise will not be settled since it is not resolved nor rejected, hence the main promise will fail"
     );
-    // resolve("Resolved 3!");
+    resolve("Resolved 3!");
   }),
 ])
   .then((val) => {
@@ -196,11 +224,36 @@ Promise.allSettled([
     );
   })
   .catch((err) => console.log(err));
+*/
+
 /**
  * "Resolved 1!" → Fulfilled
  * "Rejected!" → Rejected
  * "Resolved 2!" → Fulfilled
  * Unresolved Promise → Stays pending forever
  * 📌 Since the last promise never resolves or rejects, Promise.allSettled() itself hangs indefinitely!
- * Hence it never catches the error even if there are unresolved promises
+ * Hence it never catches the error even if there are unresolved promises causing the parent Promise to not
+ * resolve or reject as well.
  */
+
+//-----------------------Promise.any()--------------------------------------------------
+/**
+ * Promise.Any() will reject provided all the promises inside are rejected.
+ * If wither one of the promise gets resolved then Any() gets resolved(Fulfilled) with the first fulfilled
+ * value.
+ * Any() returns the first fulfilled value.
+ */
+/*
+Promise.any([
+  Promise.reject("Rejected"),
+  Promise.reject("Rejected 2"),
+  new Promise((resolve) => resolve("Resolved!!")).then(
+    console.log("Some reloved message!")
+  ),
+  Promise.resolve("Resolve 2"),
+])
+  .then((val) => console.log(val))
+  .catch((err) => {
+    console.log(err);
+  });
+*/
