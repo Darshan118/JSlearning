@@ -135,3 +135,170 @@ console.log(myPromise);
 myPromise.then((val) => console.log(val));
 console.log("End");
 */
+
+/************************** Error Handling ***********************
+Promise.reject("Error happened!")
+  .catch((err) => {
+    console.log("Caught:", err);
+    return "Recovered!"; // Recovering from error
+  })
+  .then((res) => {
+    console.log("Next Then:", res);
+  })
+  .catch((err) => {
+    console.log("Final Catch:", err); //it won't go into this because there's no error or reject to catch 
+  });
+//OP: Caught: Error happened! Next Then: Recovered!
+*/
+
+/*********************** Parallel vs Sequential Requests *********************** */
+
+/***************** fetching in sequence ********************
+ * making await in a loop makes it more slower
+
+async function fetchSequentially(ids) {
+  for (let id of ids) {
+    try {
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/posts/${id}`
+      );
+      const data = await response.json();
+      console.log("Sequence execution: ", data.title);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+}
+
+fetchSequentially([1, 2, 3, 4]);
+ */
+
+/*********** fetching parallely using 2 methods *** */
+/****** Method 1 - this is more faster compared to moethod 2
+function fetchParallely1(arr) {
+  for (let i of arr) {
+    fetch(`https://jsonplaceholder.typicode.com/posts/${i}`)
+      .then((response) => response.json())
+      .then((data) => console.log("Parallel execution: ", data.title))
+      .catch((err) => console.log("Error caught!!", err));
+  }
+}
+fetchParallely1([1, 2, 3, 4]);
+*/
+/****** Method 2 using Promise.all() *********
+async function fetchParallely2(ids) {
+  //fetch().then() will return a promise and this list of pending promises will be stored in promises varable
+  //If it seems confusing why myPromise().then() return a promise then check next code example below in console
+  // it will print Promise{<pending>} untill 1 second then it gets resolved similarly te below will in pending
+  // and one it is passed to await Promise.all() it will return all resolved value which can then be stored
+  // in results
+  let promises = ids.map((id) =>
+    fetch(`https://jsonplaceholder.typicode.com/posts/${id}`).then((res) =>
+      res.json()
+    )
+  );
+
+  let results = await Promise.all(promises);
+
+  results.forEach((element, index) => {
+    console.log(`Parallel Execution `, element.title);
+  });
+}
+fetchParallely2([1, 2, 3, 4]);
+ */
+
+/******************* Handling Error if any of the user/value is invalid 
+async function fetchUsers(ids) {
+  try {
+    let promises = ids.map((id) =>
+      fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
+        .then((res) => {
+          if (!res.ok) throw new Error(`Error!! User ${id} no found!`);
+          return res.json();
+        })
+        .catch((err) => console.log("Error fetching data:", err))
+    );
+
+    let results = await Promise.all(promises);
+    results.forEach((element) => {
+      console.log(element.name);
+    });
+  } catch (err) {
+    console.log("Error Caught!!", err);
+  }
+}
+
+fetchUsers([1, 999, 3]); // 999 is an invalid ID that may cause an error
+*/
+
+/************* To print other users inspite of few of the users are invalid
+ * To print 'User is Invalid' if user is not found or data is invalid
+ * But it shouldn't stop the execution it must still print rest of the user details.
+
+async function fetchUsers(ids) {
+  try {
+    let promises = ids.map(
+      (id) =>
+        fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
+          .then((res) => {
+            if (!res.ok) throw new Error(`User ${id} not found!!`);
+            returnres.json();
+          })
+          .catch(() => ({ name: "User not found" })) // Ensure a valid object is returned
+    );
+
+    let results = await Promise.all(promises);
+
+    results.forEach((user, index) => {
+      console.log(`User ${ids[index]}:`, user.name);
+    });
+  } catch (err) {
+    console.log("Error Caught!!", err);
+  }
+}
+
+fetchUsers([1, 999, 3]); // 999 doesn't exist!
+ */
+
+/***************** Handling Multiple Fetch Requests with Different Response Times ********************
+ * To print data in the order they complete rather than in the order they are requested.
+ */
+/******************Solution Using .then() for Immediate Logging  
+const urls = [
+  "https://jsonplaceholder.typicode.com/todos/1",
+  "https://jsonplaceholder.typicode.com/todos/2",
+  "https://jsonplaceholder.typicode.com/todos/3",
+];
+
+async function fetchAsTheyArrive(urls) {
+  let promises = urls.map((url) =>
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => console.log("Fetched:", data.id))
+  );
+
+  await Promise.all(promises); //It ensures that all promises have settled before fetchAsTheyArrive finishes execution.
+  //If you call this function inside another async function and need to wait for all requests before moving forward,
+  //this guarantees completion
+  //If you remove it, fetchAsTheyArrive(urls) will fire off the requests asynchronously and return immediately 
+  // without waiting for them to finish.
+
+fetchAsTheyArrive(urls);
+*/
+
+/***************** Using fo await...of ******************
+const urls = [
+  "https://jsonplaceholder.typicode.com/todos/1",
+  "https://jsonplaceholder.typicode.com/todos/2",
+  "https://jsonplaceholder.typicode.com/todos/3",
+];
+async function fetchAsTheyArrive(urls) {
+  let promises = urls.map((url) => fetch(url).then((res) => res.json()));
+
+  for await (let data of promises) {
+    console.log("Fetched:", data.id);
+  }
+}
+
+fetchAsTheyArrive(urls);
+ */

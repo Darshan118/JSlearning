@@ -120,7 +120,8 @@ fetchData().catch((err) => console.log("Error Caught:", err));
 
 /******************* When NOT to Use await (e.g., Inside Promise.all()) ************************************
  *
- * If you use await inside Promise.all(), it removes parallelism, making the code slower
+ * If you use await inside Promise.all(), it removes parallelism, making the code slower. 
+ * Because await makes the functuion to pause further exection unless the promise is resolved.
  *
  * bad example:
  *
