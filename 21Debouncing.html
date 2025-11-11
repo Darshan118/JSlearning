@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Debouncing example</title>
+  </head>
+  <body>
+    <input type="text" placeholder="Type something..." id="debounceInput" />
+    <script>
+      function debounce(func, delay) {
+        let timeoutId;
+        console.log("timeoutId", timeoutId);
+        return function (...args) {
+          console.log('timeoutId inside', timeoutId);
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(() => {
+            func.apply(this, args);
+          }, delay);
+        };
+      }
+
+      function handleInput(event) {
+        console.log("Input value:", event.target.value);
+      }
+
+      const debounceInputHandler = debounce(handleInput, 1000);
+
+      document
+        .getElementById("debounceInput")
+        .addEventListener("input", debounceInputHandler);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Throttling example</title>
+    <style>
+      body {
+        font-family: system-ui, Arial;
+        padding: 24px;
+      }
+      button {
+        font-size: 18px;
+        padding: 12px 18px;
+      }
+      #log {
+        margin-top: 18px;
+        font-family: monospace;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Throttle demo — button clicks</h1>
+    <p>
+      Click the button rapidly. The real handler will run at most once every
+      1000ms (1s).
+    </p>
+    <button id="spamBtn">Click me Rapidly!</button>
+    <div id="log"></div>
+    <script>
+      function throttle(func, wait) {
+        let lastTime = 0;
+        return function (...args) {
+          const now = Date.now();
+          if (now - lastTime >= wait) {
+            lastTime = now;
+            func.apply(this, args);
+          }
+        };
+      }
+
+      const logEl = document.getElementById("log");
+      function appendLog(message) {
+        logEl.textContent =
+          new Date().toLocaleTimeString() +
+          ":" +
+          message +
+          "\n" +
+          logEl.textContent;
+      }
+
+      // Handler to be throttled
+      function expensiveHandler() {
+        appendLog("Expensive handler executed");
+        for (let i = 0; i < 1e6; i++) {} // Simulate a time-consuming task
+      }
+
+      const throttledHandler = throttle(expensiveHandler, 1000);
+      document.getElementById("spamBtn").addEventListener("click", throttledHandler);
+    </script>
+  </body>
+</html>
